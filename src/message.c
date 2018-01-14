@@ -1104,6 +1104,13 @@ int otrl_message_receiving(OtrlUserState us, const OtrlMessageAppOps *ops,
 	    if (msgtype == OTRL_MSGTYPE_DH_KEY) {
 		otrl_auth_copy_on_key(&(m_context->auth), &(context->auth));
 	    } else if (msgtype != OTRL_MSGTYPE_DH_COMMIT) {
+		/* Unexpected message type */
+		if (ops->handle_msg_event) {
+		    ops->handle_msg_event(opdata,
+			    OTRL_MSGEVENT_RCVDMSG_NOT_IN_PRIVATE,
+			    context, NULL,
+			    gcry_error(GPG_ERR_NO_ERROR));
+		}
 		edata.ignore_message = 1;
 		goto end;
 	    }
